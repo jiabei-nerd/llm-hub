@@ -31,8 +31,7 @@ export async function getProviderForModel(modelId: string) {
 
   let provider = cache.get(model.provider.id);
   if (!provider) {
-    const Ctor = constructors[model.provider.name];
-    if (!Ctor) throw new Error(`未知供应商: ${model.provider.name}`);
+    const Ctor = constructors[model.provider.name] || OpenAICompatibleProvider;
     provider = new Ctor({ baseUrl: model.provider.baseUrl, apiKey: model.provider.apiKey });
     cache.set(model.provider.id, provider);
   }
