@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 const navItems = [
   { href: '/dashboard', label: '概览', icon: '📊' },
+  { href: '/models', label: '模型广场', icon: '🤖' },
   { href: '/playground', label: '对话', icon: '💬' },
   { href: '/api-keys', label: 'API密钥', icon: '🔑' },
   { href: '/usage', label: '用量', icon: '📈' },
