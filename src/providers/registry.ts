@@ -21,11 +21,11 @@ const cache = new Map<string, BaseLLMProvider>();
 
 export async function getProviderForModel(modelId: string) {
   const model = await prisma.model.findUnique({
-    where: { modelId, isActive: true },
+    where: { modelId },
     include: { provider: true },
   });
 
-  if (!model || !model.provider.isActive) {
+  if (!model || !model.isActive || !model.provider.isActive) {
     throw new Error(`模型 ${modelId} 不可用`);
   }
 
