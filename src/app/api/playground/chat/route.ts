@@ -85,8 +85,9 @@ export async function POST(request: Request) {
             Date.now() - startTime, 200
           );
         } catch (err) {
-          const errMsg = err instanceof Error ? err.message : '上游服务异常';
+          const errMsg = err instanceof Error ? `${err.message}` : '上游服务异常';
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: { message: errMsg } })}\n\n`));
+          controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
         }
       },
@@ -113,7 +114,7 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json(response);
-  } catch {
-    return NextResponse.json({ error: { message: '上游服务异常' } }, { status: 502 });
+  } catch (err) {
+    return NextResponse.json({ error: { message: err instanceof Error ? err.message : '上游服务异常' } }, { status: 502 });
   }
 }
