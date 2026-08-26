@@ -1,0 +1,32 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://llmhub:llmhub123@db:5432/llmhub
+      - JWT_SECRET=llm-hub-prod-jwt-secret-x8k2m9p4q7w1
+      - JWT_REFRESH_SECRET=llm-hub-prod-refresh-secret-y3n6v0j5t8r2
+      - NEXT_PUBLIC_APP_NAME=LLM Hub
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=llmhub
+      - POSTGRES_PASSWORD=llmhub123
+      - POSTGRES_DB=llmhub
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U llmhub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  pgdata:
