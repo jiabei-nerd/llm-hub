@@ -20,12 +20,12 @@ const constructors: Record<string, new (config: ProviderConfig) => BaseLLMProvid
 const cache = new Map<string, BaseLLMProvider>();
 
 export async function getProviderForModel(modelId: string) {
-  const model = await prisma.model.findUnique({
-    where: { modelId },
+  const model = await prisma.model.findFirst({
+    where: { modelId, isActive: true },
     include: { provider: true },
   });
 
-  if (!model || !model.isActive || !model.provider.isActive) {
+  if (!model || !model.provider.isActive) {
     throw new Error(`模型 ${modelId} 不可用`);
   }
 
