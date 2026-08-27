@@ -11,6 +11,7 @@ export interface ChatCompletionRequest {
   max_tokens?: number;
   stream?: boolean;
   stop?: string | string[];
+  enable_search?: boolean;
 }
 
 export interface ChatCompletionResponse {

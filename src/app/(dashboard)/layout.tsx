@@ -6,17 +6,17 @@ import { useAuth } from '@/context/auth-context';
 import { useEffect } from 'react';
 
 const navItems = [
-  { href: '/dashboard', label: '概览', icon: '📊' },
-  { href: '/models', label: '模型广场', icon: '🤖' },
-  { href: '/playground', label: '对话', icon: '💬' },
-  { href: '/api-keys', label: 'API密钥', icon: '🔑' },
-  { href: '/usage', label: '用量', icon: '📈' },
-  { href: '/billing', label: '账单', icon: '💰' },
-  { href: '/settings', label: '设置', icon: '⚙️' },
+  { href: '/dashboard', label: '概览' },
+  { href: '/models', label: '模型广场' },
+  { href: '/playground', label: '对话' },
+  { href: '/api-keys', label: 'API密钥' },
+  { href: '/usage', label: '用量' },
+  { href: '/billing', label: '账单' },
+  { href: '/settings', label: '设置' },
 ];
 
 const adminItems = [
-  { href: '/admin', label: '管理后台', icon: '🛠️' },
+  { href: '/admin', label: '管理后台' },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -44,11 +44,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {navItems.map(item => (
             <Link
               key={item.href} href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+              className={`flex items-center px-3 py-2 rounded-lg text-sm ${
                 pathname === item.href ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
               }`}
             >
-              <span>{item.icon}</span>
               {item.label}
             </Link>
           ))}
@@ -58,11 +57,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {adminItems.map(item => (
                 <Link
                   key={item.href} href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                  className={`flex items-center px-3 py-2 rounded-lg text-sm ${
                     pathname === item.href ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                   }`}
                 >
-                  <span>{item.icon}</span>
                   {item.label}
                 </Link>
               ))}

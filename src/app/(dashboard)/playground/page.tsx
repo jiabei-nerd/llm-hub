@@ -61,6 +61,7 @@ export default function PlaygroundPage() {
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [selectedModel, setSelectedModel] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [enableSearch, setEnableSearch] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -223,7 +224,7 @@ export default function PlaygroundPage() {
       const res = await authFetch('/api/playground/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: selectedModel, messages: apiMessages, stream: true }),
+        body: JSON.stringify({ model: selectedModel, messages: apiMessages, stream: true, enable_search: enableSearch }),
       });
 
       if (!res.ok) {
@@ -329,6 +330,14 @@ export default function PlaygroundPage() {
             ))}
             {models.length === 0 && <option value="">暂无可用模型</option>}
           </select>
+          <button
+            onClick={() => setEnableSearch(!enableSearch)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+              enableSearch ? 'bg-primary text-primary-foreground' : 'border border-input text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            {enableSearch ? '联网搜索 ON' : '联网搜索'}
+          </button>
         </div>
 
         {/* Messages */}

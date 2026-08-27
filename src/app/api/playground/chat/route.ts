@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { getProviderForModel } from '@/providers/registry';
 import { deductBalance, estimateTokens } from '@/lib/billing';
 import { ChatCompletionRequest } from '@/providers/types';
-import { generateId } from '@/lib/utils';
+import { webSearch } from '@/lib/search';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,6 +48,22 @@ export async function POST(request: Request) {
 
   const { provider, model } = providerResult;
   const startTime = Date.now();
+
+  // Web search enhancement
+  if (body.enable_search) {
+    const lastUserMsg = [...body.messages].reverse().find(m => m.role === 'user');
+    const query = typeof lastUserMsg?.content === 'string' ? lastUserMsg.content : '';
+    if (query) {
+      const searchResults = await webSearch(query);
+      if (searchResults) {
+        const searchSystemMsg = {
+          role: 'system' as const,
+          content: `以下是关于用户问题的最新网络搜索结果，请参考这些信息回答用户的问题。如果搜索结果不相关，请忽略。\n\n${searchResults}\n\n请基于以上搜索结果和你的知识来回答用户的问题。`,
+        };
+        body.messages = [searchSystemMsg, ...body.messages];
+      }
+    }
+  }
 
   if (body.stream) {
     const encoder = new TextEncoder();

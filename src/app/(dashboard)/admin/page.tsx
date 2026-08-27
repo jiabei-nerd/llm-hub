@@ -405,6 +405,17 @@ function ModelsTab() {
     loadModels();
   }
 
+  async function editModelName(id: string, currentName: string) {
+    const newName = prompt('修改显示名称：', currentName);
+    if (!newName || newName === currentName) return;
+    await authFetch('/api/admin/models', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, displayName: newName }),
+    });
+    loadModels();
+  }
+
   return (
     <div>
       <div className="flex justify-end mb-4">
@@ -464,6 +475,7 @@ function ModelsTab() {
                   </span>
                 </td>
                 <td className="px-4 py-3 space-x-2">
+                  <button onClick={() => editModelName(m.id, m.displayName)} className="text-xs text-primary hover:underline">改名</button>
                   <button onClick={() => editPrice(m.id, m.inputPrice, m.outputPrice)} className="text-xs text-primary hover:underline">改价</button>
                   <button onClick={() => toggleModel(m.id, m.isActive)} className="text-xs text-destructive hover:underline">
                     {m.isActive ? '禁用' : '启用'}
