@@ -53,8 +53,10 @@ export async function POST(request: Request) {
   if (body.enable_search) {
     const lastUserMsg = [...body.messages].reverse().find(m => m.role === 'user');
     const query = typeof lastUserMsg?.content === 'string' ? lastUserMsg.content : '';
+    console.log('[SEARCH] query:', query);
     if (query) {
       const searchResults = await webSearch(query);
+      console.log('[SEARCH] results length:', searchResults.length);
       if (searchResults) {
         const lastIdx = body.messages.length - 1;
         const originalQuestion = typeof body.messages[lastIdx].content === 'string' ? body.messages[lastIdx].content : query;
@@ -62,6 +64,7 @@ export async function POST(request: Request) {
           ...body.messages[lastIdx],
           content: `我的问题是：${originalQuestion}\n\n请根据以下网络搜索结果回答我的问题，直接给出答案：\n\n${searchResults}`,
         };
+        console.log('[SEARCH] injected, new content length:', (body.messages[lastIdx].content as string).length);
       }
     }
   }
