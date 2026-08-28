@@ -11,27 +11,17 @@ export async function webSearch(query: string): Promise<string> {
     const html = await res.text();
     const snippets: string[] = [];
 
-    const resultBlocks = html.split('class="result__body"');
-    for (let i = 1; i < resultBlocks.length && snippets.length < 5; i++) {
-      const block = resultBlocks[i];
-
-      let title = '';
-      const titleMatch = block.match(/class="result__a"[^>]*>([^<]+)/);
-      if (titleMatch) title = titleMatch[1].trim();
-
-      let snippet = '';
-      const snippetMatch = block.match(/class="result__snippet"[^>]*>([\s\S]*?)<\/a>/);
-      if (snippetMatch) {
-        snippet = snippetMatch[1].replace(/<[^>]+>/g, '').trim();
+    const matches = html.match(/class="result__snippet"[^>]*>[\s\S]*?<\/a>/g) || [];
+    for (const match of matches) {
+      const text = match.replace(/class="result__snippet"[^>]*>/, '').replace(/<\/a>$/, '').replace(/<[^>]+>/g, '').trim();
+      if (text.length > 10) {
+        snippets.push(text);
       }
-
-      if (title && snippet && snippet.length > 10) {
-        snippets.push(`【${title}】${snippet}`);
-      }
+      if (snippets.length >= 6) break;
     }
 
     if (snippets.length > 0) {
-      return '【网络搜索结果】\n\n' + snippets.join('\n\n');
+      return '以下是从互联网搜索到的相关信息：\n\n' + snippets.map((s, i) => `${i + 1}. ${s}`).join('\n\n');
     }
   } catch {}
 
