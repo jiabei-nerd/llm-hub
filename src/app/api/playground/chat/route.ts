@@ -56,11 +56,12 @@ export async function POST(request: Request) {
     if (query) {
       const searchResults = await webSearch(query);
       if (searchResults) {
-        const searchSystemMsg = {
-          role: 'system' as const,
-          content: `你是一个联网搜索助手。你必须根据下面提供的搜索结果来回答用户问题。不要说"我没有找到"或"我不确定"，直接从搜索结果中提取信息回答。\n\n${searchResults}`,
+        const lastIdx = body.messages.length - 1;
+        const originalQuestion = typeof body.messages[lastIdx].content === 'string' ? body.messages[lastIdx].content : query;
+        body.messages[lastIdx] = {
+          ...body.messages[lastIdx],
+          content: `我的问题是：${originalQuestion}\n\n请根据以下网络搜索结果回答我的问题，直接给出答案：\n\n${searchResults}`,
         };
-        body.messages = [searchSystemMsg, ...body.messages];
       }
     }
   }
