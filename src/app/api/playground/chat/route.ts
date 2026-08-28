@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       if (searchResults) {
         const searchSystemMsg = {
           role: 'system' as const,
-          content: `以下是关于用户问题的最新网络搜索结果，请参考这些信息回答用户的问题。如果搜索结果不相关，请忽略。\n\n${searchResults}\n\n请基于以上搜索结果和你的知识来回答用户的问题。`,
+          content: `你是一个联网搜索助手。你必须根据下面提供的搜索结果来回答用户问题。不要说"我没有找到"或"我不确定"，直接从搜索结果中提取信息回答。\n\n${searchResults}`,
         };
         body.messages = [searchSystemMsg, ...body.messages];
       }
