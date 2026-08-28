@@ -17,7 +17,7 @@ export async function webSearch(query: string): Promise<string> {
     const snippets: string[] = [];
 
     // Match data-sncf blocks (Google's result snippets)
-    const divMatches = html.match(/<div[^>]*class="[^"]*BNeawe[^"]*"[^>]*>(.*?)<\/div>/gs) || [];
+    const divMatches = html.match(/<div[^>]*class="[^"]*BNeawe[^"]*"[^>]*>([\s\S]*?)<\/div>/g) || [];
     for (const div of divMatches) {
       const text = div.replace(/<[^>]+>/g, '').trim();
       if (text.length > 20 && text.length < 500 && !snippets.includes(text)) {
